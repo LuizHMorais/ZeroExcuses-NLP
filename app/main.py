@@ -22,4 +22,4 @@ def prever_emocao(dados: TextoEntrada):
 # Rota base para healthcheck e evitar erro 502 no Render
 @app.get("/")
 def root():
-    return {"status": "API rodando", "documentação": "/docs"}
+    return {"status": "API rodando", "documentacao": "/docs"}
