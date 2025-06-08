@@ -23,3 +23,4 @@
 #├── requirements.txt      # Dependências do projeto
 #├── README.md             # Descrição do projeto
 #└── .gitignore            # Ignorar modelos grandes, pastas etc.
+# force redeploy
