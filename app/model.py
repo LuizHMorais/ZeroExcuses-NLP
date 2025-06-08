@@ -2,30 +2,31 @@ import joblib
 import os
 import numpy as np
 
-# Caminho absoluto para garantir que o modelo seja carregado de qualquer lugar
-modelo_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'classifier.joblib')
-modelo_path = os.path.abspath(modelo_path)
-
-# Carrega o modelo apenas uma vez
-modelo = joblib.load(modelo_path)
-
-# Lista das classes na mesma ordem que o modelo treinou
+# Define as classes na mesma ordem usada durante o treino
 CLASSES = ['sadness', 'joy', 'love', 'anger', 'fear', 'surprise']
 
+# Caminho absoluto para o modelo salvo
+modelo_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'classifier_embed.joblib')
+modelo_path = os.path.abspath(modelo_path)
+
+# Carrega o dicionário contendo o modelo e o encoder
+pacote = joblib.load(modelo_path)
+encoder = pacote['encoder']
+modelo = pacote['model']
+
 def predict(texto: str):
+    # Gera o embedding
+    emb = encoder.encode([texto])[0].reshape(1, -1)
+
     # Predição da classe
-    predicao = modelo.predict([texto])[0]
-    
-    # Probabilidades para cada classe
-    probs = modelo.predict_proba([texto])[0]
-    
-    # Mapeia classe com nome legível
-    classe_nome = CLASSES[predicao]
-    
-    # Monta dict com probabilidades
+    pred = modelo.predict(emb)[0]
+
+    # Probabilidades para todas as classes
+    probs = modelo.predict_proba(emb)[0]
     probs_dict = {CLASSES[i]: float(np.round(probs[i], 4)) for i in range(len(CLASSES))}
-    
+
     return {
-        "classe": classe_nome,
+        "classe": CLASSES[pred],
         "probabilidades": probs_dict
     }
+
